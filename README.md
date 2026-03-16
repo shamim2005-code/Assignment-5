@@ -19,6 +19,6 @@ The spread operator expands values from an array, object, or iterable into anoth
 
 An arrow function is a shorter way to write a function in JavaScript. It is useful for concise code and it handles this differently from regular functions because it takes this from the surrounding scope.
 
-### 5. What are template literals?
+5. What are template literals?
 
 Template literals are string values written with backticks. They allow variable interpolation using '${}' and support multi-line strings without using extra escape characters.

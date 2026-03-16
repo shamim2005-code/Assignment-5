@@ -8,7 +8,6 @@ const state = {
   issues: [],
   filter: "all",
   searchQuery: "",
-  loading: false,
 };
 
 const loginScreen = document.getElementById("loginScreen");
@@ -27,6 +26,16 @@ const issueModal = document.getElementById("issueModal");
 const modalTitle = document.getElementById("modalTitle");
 const modalBody = document.getElementById("modalBody");
 const modalCloseAction = document.getElementById("modalCloseAction");
+
+const DEFAULT_EMPTY_STATE = emptyState.innerHTML;
+const NO_DESCRIPTION = "No description available.";
+const PILL_RULES = [
+  { className: "pill-red", keywords: ["high", "critical", "urgent", "bug"] },
+  { className: "pill-yellow", keywords: ["help", "wanted", "question", "support"] },
+  { className: "pill-orange", keywords: ["medium", "warning", "docs", "documentation"] },
+  { className: "pill-green", keywords: ["low", "enhancement", "success"] },
+  { className: "pill-purple", keywords: ["feature", "ui", "design", "refactor"] },
+];
 
 function normalizeStatus(issue) {
   const status = (issue.status || issue.state || "").toString().toLowerCase();
@@ -47,7 +56,7 @@ function formatDate(dateString) {
 }
 
 function truncateText(text, limit) {
-  if (!text) return "No description available.";
+  if (!text) return NO_DESCRIPTION;
   if (text.length <= limit) return text;
   return `${text.slice(0, limit).trim()}...`;
 }
@@ -70,23 +79,10 @@ function getPillClass(value) {
   if (!raw) return "pill-gray";
   const text = raw.toString().toLowerCase();
 
-  if (["high", "critical", "urgent"].some((key) => text.includes(key))) {
-    return "pill-red";
-  }
-  if (["bug"].some((key) => text.includes(key))) {
-    return "pill-red";
-  }
-  if (["help", "wanted", "question", "support"].some((key) => text.includes(key))) {
-    return "pill-yellow";
-  }
-  if (["medium", "warning", "docs", "documentation"].some((key) => text.includes(key))) {
-    return "pill-orange";
-  }
-  if (["low", "enhancement", "success"].some((key) => text.includes(key))) {
-    return "pill-green";
-  }
-  if (["feature", "ui", "design", "refactor"].some((key) => text.includes(key))) {
-    return "pill-purple";
+  for (const rule of PILL_RULES) {
+    if (rule.keywords.some((key) => text.includes(key))) {
+      return rule.className;
+    }
   }
 
   return "pill-gray";
@@ -96,16 +92,15 @@ function getLabelList(labelValue) {
   if (Array.isArray(labelValue)) return labelValue;
   if (!labelValue) return [];
   if (typeof labelValue === "string") {
-    if (labelValue.includes(",")) {
-      return labelValue.split(",").map((item) => item.trim()).filter(Boolean);
-    }
-    return [labelValue];
+    return labelValue
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
   }
   return [labelValue];
 }
 
 function setLoading(isLoading) {
-  state.loading = isLoading;
   loadingSpinner.classList.toggle("hidden", !isLoading);
   if (isLoading) {
     emptyState.classList.add("hidden");
@@ -135,10 +130,7 @@ function updateSummary(items) {
 }
 
 function renderIssues() {
-  emptyState.innerHTML = `
-    <h3>No issues found</h3>
-    <p>Try a different category or search term.</p>
-  `;
+  emptyState.innerHTML = DEFAULT_EMPTY_STATE;
 
   const items = state.issues.filter((issue) => {
     if (state.filter === "all") return true;
@@ -159,7 +151,7 @@ function renderIssues() {
     const statusIcon =
       status === "open" ? "./assets/Open-Status.png" : "./assets/Closed- Status .png";
     const title = getField(issue, ["title", "name"]);
-    const description = getField(issue, ["description", "body"], "No description available.");
+    const description = getField(issue, ["description", "body"], NO_DESCRIPTION);
     const author = getField(issue, ["author", "createdBy", "user"]);
     const priority = getField(issue, ["priority"]);
     const label = getField(issue, ["labels", "label"]);
@@ -223,11 +215,7 @@ function openIssueModal(issue) {
         )
         .join("")}
     </div>
-    <p class="modal-desc">${getField(
-      issue,
-      ["description", "body"],
-      "No description available."
-    )}</p>
+    <p class="modal-desc">${getField(issue, ["description", "body"], NO_DESCRIPTION)}</p>
     <div class="modal-info">
       <div class="modal-info-item">
         <label>Assignee:</label>
