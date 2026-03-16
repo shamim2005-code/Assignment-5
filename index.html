@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitHub Issues Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <section class="login-screen" id="loginScreen">
+        <div class="login-card">
+          <div class="brand-block">
+            <img class="brand-logo" src="./assets/github-logo.png" alt="GitHub logo" />
+            <p class="eyebrow">GitHub</p>
+            <h1>Issues Tracker</h1>
+            <p class="sub-copy">
+              Sign in with the demo admin account to review, filter, and search repository
+              issues.
+            </p>
+          </div>
+
+          <form id="loginForm" class="login-form">
+            <label class="field">
+              <span>Username</span>
+              <input type="text" id="username" placeholder="Enter username" required />
+            </label>
+            <label class="field">
+              <span>Password</span>
+              <input type="password" id="password" placeholder="Enter password" required />
+            </label>
+            <button type="submit" class="primary-btn">Login</button>
+            <p class="demo-credentials">
+              Demo credential:
+              <strong>admin</strong>
+              /
+              <strong>admin123</strong>
+            </p>
+            <p id="loginError" class="error-text" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+
+      <section class="dashboard hidden" id="dashboard">
+        <header class="topbar">
+          <div class="topbar-brand">
+            <img src="./assets/github-logo.png" alt="GitHub logo" />
+            <div>
+              <h2>GitHub Issues Tracker</h2>
+            </div>
+          </div>
+
+          <div class="topbar-actions">
+            <form id="searchForm" class="search-box">
+              <input type="search" id="searchInput" placeholder="Search issues..." />
+            </form>
+            <button type="button" class="primary-btn">+ New Issue</button>
+          </div>
+        </header>
+
+        <main class="content-area">
+          <section class="panel">
+            <div class="panel-head">
+              <div class="tabs-card">
+                <div class="tabs" id="tabs">
+                  <button class="tab-btn active" data-filter="all">All</button>
+                  <button class="tab-btn" data-filter="open">Open</button>
+                  <button class="tab-btn" data-filter="closed">Closed</button>
+                </div>
+              </div>
+
+              <div class="summary-card">
+                <div class="summary-left">
+                  <div class="summary-icon">
+                    <img src="./assets/Aperture.png" alt="Summary icon" />
+                  </div>
+                  <div>
+                    <p class="summary-count">
+                      <span id="issueCount">0</span>
+                      Issues
+                    </p>
+                    <p class="summary-copy" id="summaryCopy">
+                      Track and manage your project issues
+                    </p>
+                  </div>
+                </div>
+                <div class="status-legends">
+                  <div class="legend">
+                    <span class="legend-dot open-dot"></span>
+                    <span>Open</span>
+                  </div>
+                  <div class="legend">
+                    <span class="legend-dot closed-dot"></span>
+                    <span>Closed</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="loadingSpinner" class="loading-state hidden" aria-live="polite">
+              <div class="spinner"></div>
+              <p>Loading issues...</p>
+            </div>
+
+            <div id="emptyState" class="empty-state hidden">
+              <h3>No issues found</h3>
+              <p>Try a different category or search term.</p>
+            </div>
+
+            <div class="issues-grid" id="issuesGrid"></div>
+          </section>
+        </main>
+      </section>
+    </div>
+
+    <dialog class="issue-modal" id="issueModal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Issue Title</h3>
+      </div>
+
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-actions">
+        <button type="button" class="primary-btn" id="modalCloseAction">Close</button>
+      </div>
+    </dialog>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
